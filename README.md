@@ -1,124 +1,69 @@
-# runeflower 🎵
+# runeflower
 
-A desktop app for music producers and audio enthusiasts. Paste a **YouTube URL or search query** to download audio as MP3, then automatically detect its **BPM and musical key** — all in a clean dark-mode GUI. Also includes a **Spotify Stem Separator** that splits any track into vocals, drums, bass, and more.
+Built this mainly for my own music production workflow. You paste a YouTube link (or just search for a track), it downloads the audio as an MP3, and spits out the BPM and key. There's also a stem separator on the side that works with Spotify links — splits tracks into vocals, drums, bass, etc. using Meta's Demucs model.
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue?logo=python) ![License](https://img.shields.io/badge/license-MIT-green) ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-
----
-
-## Features
-
-- 🎧 **YouTube → MP3** — download any YouTube video or search result as a high-quality MP3
-- 🎼 **BPM Detection** — accurate tempo analysis using `librosa`'s beat tracker
-- 🎹 **Key Detection** — musical key estimation via the Krumhansl-Schmuckler algorithm
-- 🎛️ **Stem Separation** — split Spotify tracks into vocals, drums, bass, and other stems using Meta's Demucs model
-- 🖥️ **Desktop GUI** — built with `customtkinter` for a modern dark-mode interface
-- 📁 **Custom Output Folder** — choose where your downloads and stems are saved
+Dark mode GUI, nothing too fancy.
 
 ---
 
-## Screenshots
+## What it does
 
-> _Add screenshots of the app here_
-
----
-
-## Requirements
-
-- Python 3.9+
-- FFmpeg ([install guide](https://ffmpeg.org/download.html))
+- Download any YouTube video or search result as MP3
+- Auto-detect BPM and musical key after download
+- Separate Spotify tracks into stems (vocals, drums, bass, other)
+- Pick your own output folder
 
 ---
 
-## Installation
+## Setup
 
-**1. Clone the repo:**
-```bash
-git clone https://github.com/YOUR_USERNAME/runeflower.git
-cd runeflower
-```
+You need Python 3.9+ and FFmpeg installed first.
 
-**2. Install FFmpeg:**
+**FFmpeg:**
 ```bash
 # Windows
 winget install ffmpeg
 
-# macOS
+# Mac
 brew install ffmpeg
 
-# Ubuntu/Debian
+# Linux
 sudo apt install ffmpeg
 ```
 
-**3. Install Python dependencies:**
+**Then install the Python packages:**
 ```bash
 pip install -r requirements.txt
 ```
 
-> ⚠️ **GPU Note:** Demucs stem separation benefits greatly from an NVIDIA GPU. Install PyTorch with CUDA from [pytorch.org](https://pytorch.org) for much faster processing. CPU-only works but can take 5–15 min per song.
+If you have an NVIDIA GPU, grab the CUDA version of PyTorch from pytorch.org before installing — makes stem separation way faster. On CPU it can take like 10+ minutes per song.
 
 ---
 
-## Usage
+## Running it
 
 ```bash
 python spotify_stem_app.py
 ```
 
-### YouTube to MP3 + Analysis
-1. Paste a YouTube URL or type a search query
-2. Choose your output folder
-3. Click **Download** — the app downloads the MP3 and displays the detected BPM and key
+For YouTube: paste a URL or type a song name, pick an output folder, hit download. BPM and key show up automatically.
 
-### Stem Separation (Spotify)
-1. Paste a Spotify track, album, or playlist URL
-2. Choose a stem model:
-   - `htdemucs` — 4 stems (vocals, drums, bass, other) — fastest
-   - `htdemucs_6s` — 6 stems (adds piano & guitar)
-   - `mdx_extra` — highest quality, slowest
-3. Click **Start Processing** and monitor the log
-
-### Output structure
-```
-~/Music/
-├── downloads/
-│   └── Song Title.mp3
-└── stems/
-    └── htdemucs/
-        └── Song Title/
-            ├── vocals.wav
-            ├── drums.wav
-            ├── bass.wav
-            └── other.wav
-```
+For stems: paste a Spotify track/album/playlist URL, pick a model (`htdemucs` is fastest, `mdx_extra` is best quality), and let it run.
 
 ---
 
-## Tech Stack
+## Stack
 
-| Tool | Purpose |
-|------|---------|
-| `customtkinter` | Dark-mode desktop GUI |
-| `yt-dlp` | YouTube audio downloading |
-| `librosa` | BPM & key detection |
-| `spotdl` | Spotify audio matching & download |
-| `demucs` | AI-powered stem separation (Meta Research) |
-| `FFmpeg` | Audio encoding & conversion |
+- `customtkinter` — GUI
+- `yt-dlp` — YouTube downloading
+- `librosa` — BPM + key detection
+- `spotdl` — Spotify audio
+- `demucs` — stem separation
 
 ---
 
-## Troubleshooting
+## Common issues
 
-| Problem | Fix |
-|---------|-----|
-| `yt-dlp: command not found` | Run `pip install yt-dlp` |
-| Download fails | Check your internet connection; some tracks may need a VPN |
-| Demucs is very slow | Normal on CPU — use GPU or try `htdemucs` (fastest model) |
-| Key detection seems off | Works best on longer tracks with a clear tonal center |
-| `ffmpeg not found` | Install FFmpeg and add it to your system PATH |
-
----
-
-## License
-
-MIT — free to use, modify, and distribute.
+- **Demucs is slow** — normal on CPU, use `htdemucs` or get a GPU
+- **ffmpeg not found** — make sure it's on your PATH after installing
+- **Key detection seems off** — works better on longer tracks, short clips can throw it off
