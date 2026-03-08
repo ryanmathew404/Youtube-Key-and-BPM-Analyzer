@@ -1,0 +1,16 @@
+# runeflower — Python dependencies
+# Install with: pip install -r requirements.txt
+
+# GUI
+customtkinter>=5.2.0
+
+# Audio downloading (YouTube, no rate limits)
+yt-dlp>=2024.1.0
+
+# Audio analysis — BPM & key detection
+librosa>=0.10.0
+numpy>=1.24.0
+soundfile>=0.12.0
+
+# FFmpeg is also required (not a pip package):
+#   Windows: winget install ffmpeg

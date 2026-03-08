@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Downloaded audio & stems (user-generated, don't commit)
+downloads/
+stems/
+*.mp3
+*.wav
+*.flac
+*.m4a
+
+# Windows shortcuts & system files
+*.lnk
+Thumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
