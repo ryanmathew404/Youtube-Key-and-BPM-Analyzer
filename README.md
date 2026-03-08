@@ -1,8 +1,8 @@
-# runeflower
+# Youtube Audio Downloader and Analyzer
 
-Built this mainly for my own music production workflow. You paste a YouTube link (or just search for a track), it downloads the audio as an MP3, and spits out the BPM and key. There's also a stem separator on the side that works with Spotify links — splits tracks into vocals, drums, bass, etc. using Meta's Demucs model.
+Built this mainly for my own music production workflow. You paste a YouTube link (or just search for a track), it downloads the audio as an MP3, and spits out the BPM and key. There's also a stem separator on the side that works with Spotify links, splits tracks into vocals, drums, bass, etc. using Meta's Demucs model.
 
-Dark mode GUI, nothing too fancy.
+Dark mode GUI.
 
 ---
 
