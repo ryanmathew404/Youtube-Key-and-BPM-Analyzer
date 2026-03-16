@@ -60,10 +60,3 @@ For stems: paste a Spotify track/album/playlist URL, pick a model (`htdemucs` is
 - `spotdl` — Spotify audio
 - `demucs` — stem separation
 
----
-
-## Common issues
-
-- **Demucs is slow** — normal on CPU, use `htdemucs` or get a GPU
-- **ffmpeg not found** — make sure it's on your PATH after installing
-- **Key detection seems off** — works better on longer tracks, short clips can throw it off
