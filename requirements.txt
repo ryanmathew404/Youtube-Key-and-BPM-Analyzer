@@ -12,5 +12,8 @@ librosa>=0.10.0
 numpy>=1.24.0
 soundfile>=0.12.0
 
+# Stem separation (vocals, drums, bass, other)
+demucs>=4.0.0
+
 # FFmpeg is also required (not a pip package):
 #   Windows: winget install ffmpeg

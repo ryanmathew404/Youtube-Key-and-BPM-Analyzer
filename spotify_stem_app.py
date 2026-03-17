@@ -38,6 +38,10 @@ def check_deps():
         import numpy  # noqa
     except ImportError:
         missing.append("numpy")
+    try:
+        import demucs  # noqa
+    except ImportError:
+        missing.append("demucs  (run: pip install demucs)")
     import shutil
     if not shutil.which("yt-dlp"):
         missing.append("yt-dlp  (run: pip install yt-dlp)")
@@ -110,10 +114,23 @@ class App(ctk.CTk):
             command=self._browse
         ).pack(side="right")
 
+        # Stem split toggle
+        opts_row = ctk.CTkFrame(self, fg_color="transparent")
+        opts_row.pack(fill="x", padx=24, pady=(0, 4))
+
+        self.split_var = ctk.BooleanVar(value=True)
+        ctk.CTkCheckBox(
+            opts_row,
+            text="Split into stems  (vocals · drums · bass · other)",
+            variable=self.split_var,
+            font=ctk.CTkFont(size=13),
+            command=self._on_split_toggle,
+        ).pack(side="left")
+
         # Start button
         self.start_btn = ctk.CTkButton(
             self,
-            text="▶   Download & Analyze",
+            text="▶   Download, Analyze & Split",
             height=50,
             font=ctk.CTkFont(size=15, weight="bold"),
             command=self._start
@@ -200,7 +217,15 @@ class App(ctk.CTk):
         self.after(0, lambda: self.bpm_label.configure(text=f"{bpm:.1f}"))
         self.after(0, lambda: self.key_label.configure(text=key))
 
-    def _set_btn(self, enabled: bool, text: str = "▶   Download & Analyze"):
+    def _on_split_toggle(self):
+        if self.split_var.get():
+            self.start_btn.configure(text="▶   Download, Analyze & Split")
+        else:
+            self.start_btn.configure(text="▶   Download & Analyze")
+
+    def _set_btn(self, enabled: bool, text: str = None):
+        if text is None:
+            text = "▶   Download, Analyze & Split" if self.split_var.get() else "▶   Download & Analyze"
         self.after(0, lambda: self.start_btn.configure(
             state="normal" if enabled else "disabled", text=text
         ))
@@ -261,7 +286,18 @@ class App(ctk.CTk):
             self._log("━" * 46)
             key, bpm = self._analyze(audio_file)
             self._set_results(bpm, key)
-            self._log(f"✅  Done!  BPM: {bpm:.1f}  |  Key: {key}")
+            self._log(f"✅  Done!  BPM: {bpm:.1f}  |  Key: {key}\n")
+
+            # Step 3: Stem splitting (optional)
+            if self.split_var.get():
+                self._log("━" * 46)
+                self._log("🎛️   Splitting stems…  (this may take a few minutes)")
+                self._log("━" * 46)
+                stems_path = self._split_stems(audio_file)
+                if stems_path:
+                    self._log(f"✅  Stems saved to: {stems_path}")
+                else:
+                    self._log("❌  Stem splitting failed. Is demucs installed?")
 
         except Exception as exc:
             self._log(f"\n❌  Error: {exc}")
@@ -312,6 +348,39 @@ class App(ctk.CTk):
             reverse=True
         )
         return candidates[0] if candidates else None
+
+    # ── Stem splitting ────────────────────────────────────────────────────────
+
+    def _split_stems(self, audio_file: Path) -> "Path | None":
+        stems_out = self.output_dir / "stems"
+        stems_out.mkdir(parents=True, exist_ok=True)
+
+        cmd = [
+            sys.executable, "-m", "demucs",
+            "--out", str(stems_out),
+            str(audio_file),
+        ]
+
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
+        )
+        for line in proc.stdout:
+            line = line.rstrip()
+            if line:
+                self._log(f"   {line}")
+        proc.wait()
+
+        if proc.returncode != 0:
+            return None
+
+        # Demucs outputs to: stems_out/htdemucs/<track_name>/
+        track_dir = stems_out / "htdemucs" / audio_file.stem
+        return track_dir if track_dir.exists() else stems_out
 
     # ── Analyze ───────────────────────────────────────────────────────────────
 
