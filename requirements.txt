@@ -12,5 +12,13 @@ librosa>=0.10.0
 numpy>=1.24.0
 soundfile>=0.12.0
 
+# Stem separation (vocals, drums, bass, other)
+demucs>=4.0.0
+sounddevice>=0.4.0  # real-time stem playback
+
+# Drum MIDI generation
+MIDIUtil>=1.2.1     # write .mid files from detected drum hits
+scipy>=1.10.0       # Butterworth band-pass filters for per-part onset detection
+
 # FFmpeg is also required (not a pip package):
 #   Windows: winget install ffmpeg
